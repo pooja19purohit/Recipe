@@ -18,22 +18,11 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recipe.command.CreateRecipeCommand;
 import com.recipe.command.ListAllRecipesCommand;
-/*import com.luckypants.command.DeleteBookCommand;
-import com.luckypants.command.GetBookCommand;
-import com.luckypants.command.ListAllBooksCommand;*/
 import com.recipe.model.Recipe;
 
-@Path("/books")
+@Path("/recipes")
 public class RecipeService {
 	ObjectMapper mapper = new ObjectMapper();
-	
-	@GET
-	//@Produces(MediaType.APPLICATION_JSON)
-	@Path("person")
-	public Response listBooks1() {
-		String booksString = "Just checking";
-		return Response.status(200).entity(booksString).build();
-	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
