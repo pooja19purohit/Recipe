@@ -1,0 +1,5 @@
+com/recipe/recipes/RecipeService.class
+com/recipe/model/Recipe.class
+com/recipe/command/CreateRecipeCommand.class
+com/recipe/mongo/ConnectionProvider.class
+launch/Main.class
