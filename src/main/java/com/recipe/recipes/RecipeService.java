@@ -58,6 +58,7 @@ public class RecipeService {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	//@Consumes("application/x-www-form-urlencoded")
 	public Response createRecipe(String recipeStr) {
 
 		try {
