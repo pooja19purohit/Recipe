@@ -1,5 +1,10 @@
 /Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/command/CreateRecipeCommand.java
 /Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/recipes/RecipeService.java
 /Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/model/Recipe.java
+/Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/command/SearchRecipeCommand.java
+/Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/recipes/UserService.java
 /Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/mongo/ConnectionProvider.java
+/Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/command/ListAllRecipesCommand.java
+/Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/model/User.java
+/Users/pooja/Documents/CS617/Recipe/src/main/java/com/recipe/command/CreateUserCommand.java
 /Users/pooja/Documents/CS617/Recipe/src/main/java/launch/Main.java
