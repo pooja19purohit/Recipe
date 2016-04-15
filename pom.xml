@@ -132,7 +132,7 @@
 					<assembleDirectory>target</assembleDirectory>
 					<programs>
 						<program>
-							<mainClass>launch.Main</mainClass>
+							<mainClass>main.java.launch.Main</mainClass>
 							<name>webapp</name>
 						</program>
 					</programs>
