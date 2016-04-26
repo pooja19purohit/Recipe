@@ -18,17 +18,56 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recipe.command.CreateRecipeCommand;
 import com.recipe.command.ListAllRecipesCommand;
+import com.recipe.command.SearchRecipeCommand;
+import com.recipe.command.DeleteRecipeCommand;
 import com.recipe.model.Recipe;
 
 @Path("/recipes")
 public class RecipeService {
 	ObjectMapper mapper = new ObjectMapper();
-
+	
+	//https://unhrecipe.herokuapp.com/rest/recipes
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listBooks() {
+	public Response listRecipes() {
 		ListAllRecipesCommand listRecipes = new ListAllRecipesCommand();
 		ArrayList<Recipe> list = listRecipes.execute();
+		String booksString = "recipes : ";
+		try {
+			booksString = mapper.writeValueAsString(list);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(booksString).build();
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	@Path("/createRecipe")
+	//@Consumes("application/x-www-form-urlencoded")
+	public Response createRecipe(String recipeStr) {
+
+		try {
+			CreateRecipeCommand create = new CreateRecipeCommand();
+			Recipe recipe = mapper.readValue(recipeStr, Recipe.class);
+			boolean success = create.execute(recipe);
+			if (success) {
+				return Response.status(201).build();
+			} else
+				return Response.status(400).build();
+		} catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
+	}
+	
+	@GET
+	@Path("search")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchRecipe(@QueryParam("q") String query, @QueryParam("offset") int offset, @QueryParam("count") int count) {
+
+		SearchRecipeCommand listRecipes = new SearchRecipeCommand();
+		ArrayList<Recipe> list = listRecipes.execute(query);
 		String booksString = null;
 		try {
 			booksString = mapper.writeValueAsString(list);
@@ -37,6 +76,28 @@ public class RecipeService {
 		}
 		return Response.status(200).entity(booksString).build();
 	}
+	
+	@DELETE
+	@Path("/delete/{recipeName}")
+	public Response deleteBook(@PathParam("recipeName") String recipeName) {
+		try {
+		DeleteRecipeCommand delete = new DeleteRecipeCommand();
+		boolean success = delete.execute(recipeName);
+		
+		if (success) {
+			return Response.status(200).build();
+		} else
+			return Response.status(400).build();
+	} catch (Exception e) {
+		return Response.status(400).entity(e.toString()).build();
+	}
+	}
+	
+	
+	
+	
+	
+	
 
 
 	/*@GET
@@ -55,24 +116,7 @@ public class RecipeService {
 		return Response.status(200).entity(bookString).build();
 	}*/
 
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	//@Consumes("application/x-www-form-urlencoded")
-	public Response createRecipe(String recipeStr) {
-
-		try {
-			CreateRecipeCommand create = new CreateRecipeCommand();
-			Recipe recipe = mapper.readValue(recipeStr, Recipe.class);
-			boolean success = create.execute(recipe);
-			if (success) {
-				return Response.status(201).build();
-			} else
-				return Response.status(400).build();
-		} catch (Exception e) {
-			return Response.status(400).entity(e.toString()).build();
-		}
-	}
+	
 
 	/*@GET
 	@Path("/search")

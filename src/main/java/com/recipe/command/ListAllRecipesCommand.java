@@ -18,15 +18,16 @@ public class ListAllRecipesCommand {
 	public ArrayList<Recipe> execute() {
 		MongoClient client = (new ConnectionProvider()).getConnection();
 		MongoDatabase mdb = client.getDatabase("recipe");
-		MongoCollection<Document> booksColl = mdb.getCollection("recipeData");
+		MongoCollection<Document> recipeCollection = mdb.getCollection("recipeData");
 		
-		ArrayList<Recipe> books = new ArrayList<Recipe>();
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 		try {
-			FindIterable<Document> cursor = booksColl.find();
+			
+			FindIterable<Document> cursor = recipeCollection.find();
 			for (Document c : cursor) {
 				Recipe b = mapper.convertValue(c, Recipe.class);
 
-				books.add(b);
+				recipes.add(b);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -35,7 +36,7 @@ public class ListAllRecipesCommand {
 		finally{
 			client.close();
 		}
-		return books;
+		return recipes;
 
 	}
 }
