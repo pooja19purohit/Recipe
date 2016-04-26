@@ -32,7 +32,7 @@ public class RecipeService {
 	public Response listRecipes() {
 		ListAllRecipesCommand listRecipes = new ListAllRecipesCommand();
 		ArrayList<Recipe> list = listRecipes.execute();
-		String booksString = "recipes : ";
+		String booksString = null;
 		try {
 			booksString = mapper.writeValueAsString(list);
 		} catch (Exception e) {
