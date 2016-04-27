@@ -133,29 +133,4 @@ public class RecipeService {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	/*@GET
-	@Path("/{key}/{value}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getBook(@PathParam("key") String key,
-			@PathParam("value") String value) {
-		GetBookCommand getBookCommand = new GetBookCommand();
-		Book book = getBookCommand.execute(key, value);
-		String bookString = null;
-		try {
-			bookString = mapper.writeValueAsString(book);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return Response.status(200).entity(bookString).build();
-	}*/
-
-	
-
-	
 }
