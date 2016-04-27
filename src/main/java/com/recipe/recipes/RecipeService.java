@@ -8,6 +8,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -20,6 +21,7 @@ import com.recipe.command.CreateRecipeCommand;
 import com.recipe.command.ListAllRecipesCommand;
 import com.recipe.command.SearchRecipeCommand;
 import com.recipe.command.DeleteRecipeCommand;
+import com.recipe.command.UpdateRecipeCommand;
 import com.recipe.model.Recipe;
 
 @Path("/recipes")
@@ -91,6 +93,25 @@ public class RecipeService {
 	} catch (Exception e) {
 		return Response.status(400).entity(e.toString()).build();
 	}
+	}
+	
+	@PUT
+	@Path("/put/{recipeName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	public Response createBook(String recipeStr, @PathParam("recipeName") String recipeName) {
+
+		try {
+			UpdateRecipeCommand update = new UpdateRecipeCommand();
+			Recipe recipe = mapper.readValue(recipeStr, Recipe.class);
+			boolean success = update.execute(recipeName, recipe);
+			if (success) {
+				return Response.status(201).build();
+			} else
+				return Response.status(400).build();
+		} catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
 	}
 	
 	
