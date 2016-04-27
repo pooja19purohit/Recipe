@@ -22,6 +22,7 @@ import com.recipe.command.ListAllRecipesCommand;
 import com.recipe.command.SearchRecipeCommand;
 import com.recipe.command.DeleteRecipeCommand;
 import com.recipe.command.UpdateRecipeCommand;
+import com.recipe.command.GetRecipeCommand;
 import com.recipe.model.Recipe;
 
 @Path("/recipes")
@@ -114,6 +115,23 @@ public class RecipeService {
 		}
 	}
 	
+	@GET
+	@Path("/getone/{key}/{value}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRecipeForAtttribute(@PathParam("key") String key, @PathParam("value") String value) {
+		System.out.println(key + value);
+		GetRecipeCommand getRecipeCommand = new GetRecipeCommand();
+		Recipe recipe = getRecipeCommand.execute(key, value);
+		String recipeString = null;
+		try {
+			recipeString = mapper.writeValueAsString(recipe);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(400).build();
+		}
+		return Response.status(200).entity(recipeString).build();
+	}
+	
 	
 	
 	
@@ -139,30 +157,5 @@ public class RecipeService {
 
 	
 
-	/*@GET
-	@Path("/search")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response searchBook(
-			@DefaultValue("*") @QueryParam("query") String query,
-			@DefaultValue("author") @QueryParam("sortby") String sortby) {
-		HashMap<String, String> responseMap = new HashMap<String, String>();
-		responseMap.put("query", query);
-		responseMap.put("sortby", sortby);
-		String rString = "";
-		try {
-			rString = mapper.writeValueAsString(responseMap);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return Response.status(500).entity(e.toString()).build();
-		}
-		return Response.status(200).entity(rString).build();
-	}
-
-	@DELETE
-	@Path("/{isbn}")
-	public Response deleteBook(@PathParam("isbn") String isbn) {
-		DeleteBookCommand delete = new DeleteBookCommand();
-		delete.execute(isbn);
-		return Response.status(200).build();
-	}*/
+	
 }
