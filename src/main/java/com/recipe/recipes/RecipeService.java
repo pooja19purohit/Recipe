@@ -27,6 +27,10 @@ import com.recipe.command.UpdateRecipeCommand;
 import com.recipe.command.GetRecipeCommand;
 import com.recipe.model.Recipe;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.Properties;
+import com.recipe.util.PropertiesLookup;
+
 @Path("/recipes")
 public class RecipeService {
 	ObjectMapper mapper = new ObjectMapper();
@@ -135,6 +139,42 @@ public class RecipeService {
 			return Response.status(400).build();
 		}
 		return Response.status(200).entity(recipeString).build();
+	}
+	
+	
+	@GET
+	@Path("/getappdetails")
+	@Produces(MediaType.APPLICATION_JSON)
+
+	public Response getAppDetails() {
+
+	String result = "";
+	try {
+	ObjectNode appInfo = mapper.createObjectNode();
+
+	PropertiesLookup pl = new PropertiesLookup();
+
+	appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
+
+	appInfo.put("team", pl.getProperty("team"));
+
+	appInfo.put("Version", pl.getProperty("Version"));
+
+	appInfo.put("course", pl.getProperty("course"));
+
+	result = mapper.writeValueAsString(appInfo);
+
+	}
+
+	catch(Exception e) {
+
+	System.out.println(e.getMessage());
+
+	return Response.status(400).entity(e.toString()).build();
+
+	}
+	return Response.status(200).entity(result).build();
+
 	}
 	
 	
