@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 import com.recipe.command.CreateRecipeCommand;
 import com.recipe.command.ListAllRecipesCommand;
 import com.recipe.command.SearchRecipeCommand;
@@ -115,6 +117,9 @@ public class RecipeService {
 		}
 	}
 	
+	/*
+	 * Get first recipe which satisfies the Key:Value combination 
+	 */
 	@GET
 	@Path("/getone/{key}/{value}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -131,6 +136,7 @@ public class RecipeService {
 		}
 		return Response.status(200).entity(recipeString).build();
 	}
+	
 	
 	
 }
