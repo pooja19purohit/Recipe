@@ -34,7 +34,7 @@ import com.recipe.util.PropertiesLookup;
 @Path("/recipes")
 public class RecipeService {
 	ObjectMapper mapper = new ObjectMapper();
-	
+
 	//https://unhrecipe.herokuapp.com/rest/recipes
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -49,7 +49,7 @@ public class RecipeService {
 		}
 		return Response.status(200).entity(booksString).build();
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
@@ -69,7 +69,7 @@ public class RecipeService {
 			return Response.status(400).entity(e.toString()).build();
 		}
 	}
-	
+
 	@GET
 	@Path("search")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -85,23 +85,23 @@ public class RecipeService {
 		}
 		return Response.status(200).entity(booksString).build();
 	}
-	
+
 	@DELETE
 	@Path("/delete/{recipeName}")
 	public Response deleteBook(@PathParam("recipeName") String recipeName) {
 		try {
-		DeleteRecipeCommand delete = new DeleteRecipeCommand();
-		boolean success = delete.execute(recipeName);
-		
-		if (success) {
-			return Response.status(200).build();
-		} else
-			return Response.status(400).build();
-	} catch (Exception e) {
-		return Response.status(400).entity(e.toString()).build();
+			DeleteRecipeCommand delete = new DeleteRecipeCommand();
+			boolean success = delete.execute(recipeName);
+
+			if (success) {
+				return Response.status(200).build();
+			} else
+				return Response.status(400).build();
+		} catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
 	}
-	}
-	
+
 	@PUT
 	@Path("/put/{recipeName}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -120,7 +120,7 @@ public class RecipeService {
 			return Response.status(400).entity(e.toString()).build();
 		}
 	}
-	
+
 	/*
 	 * Get first recipe which satisfies the Key:Value combination 
 	 */
@@ -140,43 +140,47 @@ public class RecipeService {
 		}
 		return Response.status(200).entity(recipeString).build();
 	}
-	
-	
+
+
 	@GET
 	@Path("/getappdetails")
 	@Produces(MediaType.APPLICATION_JSON)
-
 	public Response getAppDetails() {
 
-	String result = "";
+		String result = "";
+		try {
+			ObjectNode appInfo = mapper.createObjectNode();
+			PropertiesLookup pl = new PropertiesLookup();
+			appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
+			appInfo.put("team", pl.getProperty("team"));
+			appInfo.put("Version", pl.getProperty("Version"));
+            appInfo.put("course", pl.getProperty("course"));
+            result = mapper.writeValueAsString(appInfo);
+		}
+		catch(Exception e) {
+        System.out.println(e.getMessage());
+        return Response.status(400).entity(e.toString()).build();
+		}
+		return Response.status(200).entity(result).build();
+	}
+	
+	@GET
+    @Path("/search/filter/{key}/{value}")
+    @Produces(MediaType.APPLICATION_JSON)
+	public Response searchRecipeWithFilter(@QueryParam("q") String
+	query,@PathParam("key") String key, @PathParam("value") String value)
+	{
+	SearchRecipeCommand listRecipes = new SearchRecipeCommand();
+	ArrayList<Recipe> list = listRecipes.execute(query,key,value);
+	String booksString = null;
 	try {
-	ObjectNode appInfo = mapper.createObjectNode();
-
-	PropertiesLookup pl = new PropertiesLookup();
-
-	appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
-
-	appInfo.put("team", pl.getProperty("team"));
-
-	appInfo.put("Version", pl.getProperty("Version"));
-
-	appInfo.put("course", pl.getProperty("course"));
-
-	result = mapper.writeValueAsString(appInfo);
-
+	booksString = mapper.writeValueAsString(list);
 	}
-
-	catch(Exception e) {
-
-	System.out.println(e.getMessage());
-
+	catch (Exception e) {
+	e.printStackTrace();
 	return Response.status(400).entity(e.toString()).build();
-
 	}
-	return Response.status(200).entity(result).build();
-
+	return Response.status(200).entity(booksString).build();
 	}
-	
-	
-	
+
 }
