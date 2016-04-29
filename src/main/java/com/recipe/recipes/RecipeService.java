@@ -147,34 +147,21 @@ public class RecipeService {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	public Response getAppDetails() {
-
 	String result = "";
 	try {
 	ObjectNode appInfo = mapper.createObjectNode();
-
 	PropertiesLookup pl = new PropertiesLookup();
-
 	appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
-
 	appInfo.put("team", pl.getProperty("team"));
-
 	appInfo.put("Version", pl.getProperty("Version"));
-
 	appInfo.put("course", pl.getProperty("course"));
-
 	result = mapper.writeValueAsString(appInfo);
-
 	}
-
 	catch(Exception e) {
-
 	System.out.println(e.getMessage());
-
 	return Response.status(400).entity(e.toString()).build();
-
 	}
 	return Response.status(200).entity(result).build();
-
 	}
 	
 	
