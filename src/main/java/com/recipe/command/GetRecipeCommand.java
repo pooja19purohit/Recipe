@@ -44,6 +44,27 @@ public class GetRecipeCommand {
 
 		return mapper.convertValue(result, Recipe.class);
 	}
+	
+	public Recipe execute(String id) {
+		MongoClient client = (new ConnectionProvider()).getConnection();
+		MongoDatabase mdb = client.getDatabase("recipe");
+		MongoCollection<Document> recipeCollection = mdb.getCollection("recipeData");
+
+		BasicDBObject searchQuery = new BasicDBObject();
+		searchQuery.put("_id", new ObjectId(id));
+		Document result = null;
+		try {
+		FindIterable<Document> recipe = recipeCollection.find(searchQuery);
+		result = recipe.first();
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		finally {
+		client.close();
+		}
+		return mapper.convertValue(result, Recipe.class);
+	}
 
 
 }

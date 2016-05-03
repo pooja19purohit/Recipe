@@ -4,13 +4,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-//import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.bson.types.ObjectId;
+
+import com.recipe.util.ObjectIdJsonSerializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.google.common.base.MoreObjects;
+import java.util.Objects;
+
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Recipe {
 	//@JsonDeserialize(as=ArrayList.class, contentAs=String.class)
+
+	//@JsonProperty("id")
+	
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonProperty("id")
+	ObjectId id;
 	String name;
 	String difficultyLevel;
 	String recipeCategory;
@@ -18,13 +32,25 @@ public class Recipe {
 	String prepTime;
 	String cookTime;
 	String recipePhotoLink;
-	String recipeVideoLink;
 	@JsonDeserialize(as=ArrayList.class, contentAs=HashMap.class)
 	ArrayList<HashMap<String,Object>> ingredients;
 	String direction;
 	String additionalNote;
 	String yields;
 	HashMap<String,String> nutritionFacts;
+	
+	
+	
+	//@JsonSerialize(using=ObjectIdJsonSerializer.class)
+	@JsonProperty("id")
+	public ObjectId getId() {
+		return id;
+	}
+	
+	@JsonProperty("id")
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
 	
 	public String getName() {
 		return name;
@@ -68,12 +94,6 @@ public class Recipe {
 	public void setRecipePhotoLink(String recipePhotoLink) {
 		this.recipePhotoLink = recipePhotoLink;
 	}
-	public String getRecipeVideoLink() {
-		return recipeVideoLink;
-	}
-	public void setRecipeVideoLink(String recipeVideoLink) {
-		this.recipeVideoLink = recipeVideoLink;
-	}
 	
 	@JsonDeserialize(as=ArrayList.class, contentAs=HashMap.class)
 	public ArrayList<HashMap<String, Object>> getIngredients() {
@@ -108,8 +128,20 @@ public class Recipe {
 		this.nutritionFacts = nutritionFacts;
 	}
 	 
-
-	
-	
-
 }
+
+/*//To serialize ID
+class ObjectID_Serializer extends JsonSerializer<ObjectId>{
+	 
+	@Override
+	public void serialize(ObjectId objid, JsonGenerator jsongen, SerializerProvider provider) throws IOException, JsonProcessingException {
+		
+		if(objid == null ){
+			jsongen.writeNull();
+		}else{
+			jsongen.writeString(objid.toString());
+		}
+		
+	}
+ 
+}*/
