@@ -12,7 +12,7 @@ public class PropertiesLookup {
 
 	public PropertiesLookup() {
 		try {
-			input = getClass().getClassLoader().getResourceAsStream(filename);
+			input = PropertiesLookup.class.getResourceAsStream(filename);
 			if (input == null) {
 				throw new FileNotFoundException("Sorry, unable to find " + filename);
 			}
