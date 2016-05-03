@@ -9,22 +9,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.bson.types.ObjectId;
 
-import com.recipe.util.ObjectIdJsonSerializer;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.google.common.base.MoreObjects;
-import java.util.Objects;
 
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Recipe {
-	//@JsonDeserialize(as=ArrayList.class, contentAs=String.class)
 
-	//@JsonProperty("id")
-	
-	@JsonSerialize(using = ToStringSerializer.class)
-	@JsonProperty("id")
-	ObjectId id;
 	String name;
 	String difficultyLevel;
 	String recipeCategory;
@@ -39,18 +30,6 @@ public class Recipe {
 	String yields;
 	HashMap<String,String> nutritionFacts;
 	
-	
-	
-	//@JsonSerialize(using=ObjectIdJsonSerializer.class)
-	@JsonProperty("id")
-	public ObjectId getId() {
-		return id;
-	}
-	
-	@JsonProperty("id")
-	public void setId(ObjectId id) {
-		this.id = id;
-	}
 	
 	public String getName() {
 		return name;
