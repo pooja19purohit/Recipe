@@ -7,7 +7,7 @@ import java.util.Properties;
 public class PropertiesLookup {
 
 	Properties prop = new Properties();
-	String filename = "/config.properties";
+	String filename = "config.properties";
 	InputStream input = null;
 
 	public PropertiesLookup() {
