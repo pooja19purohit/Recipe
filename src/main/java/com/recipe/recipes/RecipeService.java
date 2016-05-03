@@ -171,7 +171,7 @@ public class RecipeService {
 	appInfo.put("team", pl.getProperty("team"));
 	appInfo.put("Version", pl.getProperty("Version"));
 	appInfo.put("course", pl.getProperty("course"));
-	System.out.println(pl.getProperty("ProjectName"));
+	
 	result = mapper.writeValueAsString(appInfo);
 	}
 	catch(Exception e) {

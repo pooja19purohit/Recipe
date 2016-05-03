@@ -1,5 +1,6 @@
 package com.recipe.util;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -13,10 +14,11 @@ public class PropertiesLookup {
 		try {
 			input = getClass().getClassLoader().getResourceAsStream(filename);
 			if (input == null) {
-				System.out.println("Sorry, unable to find " + filename);
-				return;
+				throw new FileNotFoundException("Sorry, unable to find " + filename);
 			}
+			else{
 			prop.load(input);
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
