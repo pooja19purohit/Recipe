@@ -49,6 +49,23 @@ public class RecipeService {
 		}
 		return Response.status(200).entity(booksString).build();
 	}
+	
+	@GET
+    @Path("/getById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+	public Response getRecipeById(@PathParam("id") String id)
+	{
+		GetRecipeCommand getRecipeCommand = new GetRecipeCommand();
+		Recipe recipe = getRecipeCommand.execute(id);
+		String recipeString = null;
+		try {
+			recipeString = mapper.writeValueAsString(recipe);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(400).build();
+		}
+		return Response.status(200).entity(recipeString).build();
+	}
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -69,11 +86,12 @@ public class RecipeService {
 			return Response.status(400).entity(e.toString()).build();
 		}
 	}
-
+	
+	//TODO: Pagination
 	@GET
 	@Path("search")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response searchRecipe(@QueryParam("q") String query, @QueryParam("offset") int offset, @QueryParam("count") int count) {
+	public Response searchRecipe(@QueryParam("q") String query) {
 
 		SearchRecipeCommand listRecipes = new SearchRecipeCommand();
 		ArrayList<Recipe> list = listRecipes.execute(query);
@@ -128,7 +146,6 @@ public class RecipeService {
 	@Path("/getone/{key}/{value}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getRecipeForAtttribute(@PathParam("key") String key, @PathParam("value") String value) {
-		System.out.println(key + value);
 		GetRecipeCommand getRecipeCommand = new GetRecipeCommand();
 		Recipe recipe = getRecipeCommand.execute(key, value);
 		String recipeString = null;
@@ -146,22 +163,22 @@ public class RecipeService {
 	@Path("/getappdetails")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAppDetails() {
-
-		String result = "";
-		try {
-			ObjectNode appInfo = mapper.createObjectNode();
-			PropertiesLookup pl = new PropertiesLookup();
-			appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
-			appInfo.put("team", pl.getProperty("team"));
-			appInfo.put("Version", pl.getProperty("Version"));
-            appInfo.put("course", pl.getProperty("course"));
-            result = mapper.writeValueAsString(appInfo);
-		}
-		catch(Exception e) {
-        System.out.println(e.getMessage());
-        return Response.status(400).entity(e.toString()).build();
-		}
-		return Response.status(200).entity(result).build();
+	String result = "";
+	try {
+	ObjectNode appInfo = mapper.createObjectNode();
+	PropertiesLookup pl = new PropertiesLookup();
+	appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
+	appInfo.put("team", pl.getProperty("team"));
+	appInfo.put("Version", pl.getProperty("Version"));
+	appInfo.put("course", pl.getProperty("course"));
+	System.out.println(pl.getProperty("ProjectName"));
+	result = mapper.writeValueAsString(appInfo);
+	}
+	catch(Exception e) {
+	System.out.println(e.getMessage());
+	return Response.status(400).entity(e.toString()).build();
+	}
+	return Response.status(200).entity(result).build();
 	}
 	
 	@GET
