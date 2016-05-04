@@ -7,15 +7,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.bson.types.ObjectId;
-
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.databind.*;
 
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Recipe {
-
+	
+	//@Id
+	//@ObjectId
+	//String id;
 	String name;
 	String difficultyLevel;
 	String recipeCategory;
@@ -31,6 +33,12 @@ public class Recipe {
 	HashMap<String,String> nutritionFacts;
 	
 	
+	/*public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}*/
 	public String getName() {
 		return name;
 	}
