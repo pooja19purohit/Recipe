@@ -1,11 +1,10 @@
 package com.recipe.recipes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -17,8 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-
+import com.recipe.command.CreateImageCommand;
 import com.recipe.command.CreateRecipeCommand;
 import com.recipe.command.ListAllRecipesCommand;
 import com.recipe.command.SearchRecipeCommand;
@@ -26,9 +24,7 @@ import com.recipe.command.DeleteRecipeCommand;
 import com.recipe.command.UpdateRecipeCommand;
 import com.recipe.command.GetRecipeCommand;
 import com.recipe.model.Recipe;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.Properties;
 import com.recipe.util.PropertiesLookup;
 
 @Path("/recipes")
@@ -121,10 +117,10 @@ public class RecipeService {
 	}
 
 	@PUT
-	@Path("/put/{recipeName}")
+	@Path("/updateAll/{recipeName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	public Response createBook(String recipeStr, @PathParam("recipeName") String recipeName) {
+	public Response updateRecipe(String recipeStr, @PathParam("recipeName") String recipeName) {
 
 		try {
 			UpdateRecipeCommand update = new UpdateRecipeCommand();
@@ -138,6 +134,25 @@ public class RecipeService {
 			return Response.status(400).entity(e.toString()).build();
 		}
 	}
+	
+	/*@PUT
+	@Path("/put/{recipeName}/{fieldName}/{fieldValue}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	public Response updateRecipeField(String recipeStr, @PathParam("recipeName") String recipeName, @PathParam("fieldName") String fieldName, @PathParam("fieldValue") String fieldValue) {
+
+		try {
+			UpdateRecipeCommand update = new UpdateRecipeCommand();
+			Recipe recipe = mapper.readValue(recipeStr, Recipe.class);
+			boolean success = update.execute(recipeName, fieldName, fieldValue, recipe);
+			if (success) {
+				return Response.status(201).build();
+			} else
+				return Response.status(400).build();
+		} catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
+	}*/
 
 	/*
 	 * Get first recipe which satisfies the Key:Value combination 
@@ -171,7 +186,7 @@ public class RecipeService {
 	appInfo.put("team", pl.getProperty("team"));
 	appInfo.put("Version", pl.getProperty("Version"));
 	appInfo.put("course", pl.getProperty("course"));
-	System.out.println(pl.getProperty("ProjectName"));
+	
 	result = mapper.writeValueAsString(appInfo);
 	}
 	catch(Exception e) {
@@ -199,5 +214,21 @@ public class RecipeService {
 	}
 	return Response.status(200).entity(booksString).build();
 	}
+	
+	//TODO: Link to recipe
+	@POST
+	@Path("/addImage")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	public Response addImage(String recipeStr) {
+		CreateImageCommand image = new CreateImageCommand();
+		boolean result = image.execute();
+		if(result) {
+			return Response.status(201).entity("Added successfully").build();
+		}
+		else {
+			return Response.status(400).entity("Could not add image").build();
+		}
+	}
+	
 
 }
