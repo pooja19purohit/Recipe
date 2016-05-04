@@ -83,6 +83,27 @@ public class RecipeService {
 		}
 	}
 	
+	@POST
+	@Path("/simplePostRecipe")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response createRecipe(@FormParam("recipeName") String name,@FormParam("direction") String direction) {
+	try {
+		CreateRecipeCommand create = new CreateRecipeCommand();
+		Recipe recipe = new Recipe();
+		recipe.setName(name);
+		recipe.setDirection(direction);
+		boolean success = create.execute(recipe);
+		if (success) {
+		return Response.status(201).entity("recipe successfully created").build();
+		}
+		else
+		return Response.status(400).build();
+		}
+	catch (Exception e) {
+		return Response.status(400).entity(e.toString()).build();
+	}
+}
+	
 	//TODO: Pagination
 	@GET
 	@Path("search")
@@ -115,6 +136,25 @@ public class RecipeService {
 			return Response.status(400).entity(e.toString()).build();
 		}
 	}
+	
+	@DELETE
+    @Path("/deleteById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+	public Response deleteRecipeById(@PathParam("id") String id) {
+		try {
+		DeleteRecipeCommand delete = new DeleteRecipeCommand();
+		boolean success = delete.execute("_id" , id);
+		if (success) {
+			return Response.status(200).entity("Recipe deleted successfully").build();
+		}
+		else
+			return Response.status(400).entity("There was a problem while deleting the recipe from the database").build();
+		}
+		catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
+	}
+
 
 	@PUT
 	@Path("/updateAll/{recipeName}")
