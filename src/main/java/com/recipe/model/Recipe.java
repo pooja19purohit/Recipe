@@ -1,23 +1,34 @@
 package com.recipe.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import net.vz.mongodb.jackson.Id;
+//import net.vz.mongodb.jackson.ObjectId;
+
 import java.util.HashMap;
 
+import org.bson.types.ObjectId;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.*;
 
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class Recipe {
 	
-	//@Id
-	//@ObjectId
-	//String id;
+	@JsonSerialize(using=ObjectIdJsonSerializer.class)
+	ObjectId id;
 	String name;
 	String difficultyLevel;
 	String recipeCategory;
@@ -33,12 +44,12 @@ public class Recipe {
 	HashMap<String,String> nutritionFacts;
 	
 	
-	/*public String getId() {
+	public ObjectId getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(ObjectId id) {
 		this.id = id;
-	}*/
+	}
 	public String getName() {
 		return name;
 	}
@@ -116,6 +127,7 @@ public class Recipe {
 	}
 	 
 }
+
 
 /*//To serialize ID
 class ObjectID_Serializer extends JsonSerializer<ObjectId>{

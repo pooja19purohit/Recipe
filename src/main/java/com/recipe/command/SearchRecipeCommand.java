@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
@@ -56,10 +57,13 @@ public class SearchRecipeCommand {
 
 	}
 	
-	public ArrayList<Recipe> execute(String query, String filterField, String filterValue) {
+	public ArrayList<Recipe> execute(String query, String filterField, String filterValue, boolean or) {
+		
 		MongoClient client = (new ConnectionProvider()).getConnection();
 		MongoDatabase mdb = client.getDatabase("recipe");
 		MongoCollection<Document> recipeCollection = mdb.getCollection("recipeData");
+		BasicDBObject andQuery;
+		FindIterable<Document> cursor;
 		
 		recipeCollection.createIndex(new BasicDBObject("$**","text"));
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
@@ -75,10 +79,22 @@ public class SearchRecipeCommand {
 			/*BasicDBObject searchQuery = new BasicDBObject();      
 		    searchQuery.put("text", query); */
 		    Document textSearch = new Document("$text", new Document("$search", query));
-			FindIterable<Document> cursor = recipeCollection.find(textSearch).filter(searchQuery);
+		    BasicDBList and = new BasicDBList();
+			and.add(searchQuery);
+			and.add(textSearch);
+			if(or) {
+				System.out.println("or");
+				cursor = recipeCollection.find(textSearch).filter(searchQuery);
+			}
+			else {
+				System.out.println("and");
+				andQuery = new BasicDBObject("$and", and);
+				cursor = recipeCollection.find(andQuery);
+			}
+			//FindIterable<Document> cursor = recipeCollection.find(andQuery);
+
 			for (Document c : cursor) {
 				Recipe b = mapper.convertValue(c, Recipe.class);
-
 				recipes.add(b);
 			}
 		} catch (Exception e) {

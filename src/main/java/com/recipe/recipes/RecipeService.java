@@ -1,3 +1,8 @@
+/*
+ * Web Services
+ * Authors: Pooja Purohit & Keertana HS
+ * 
+ */
 package com.recipe.recipes;
 
 import java.util.ArrayList;
@@ -15,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recipe.command.CreateImageCommand;
 import com.recipe.command.CreateRecipeCommand;
@@ -31,7 +37,10 @@ import com.recipe.util.PropertiesLookup;
 public class RecipeService {
 	ObjectMapper mapper = new ObjectMapper();
 
-	//https://unhrecipe.herokuapp.com/rest/recipes
+	/*
+	 * Rest Services created by Pooja: POST, GET, PUT , DELETE
+	 */
+	// https://unhrecipe.herokuapp.com/rest/recipes
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listRecipes() {
@@ -42,15 +51,15 @@ public class RecipeService {
 			booksString = mapper.writeValueAsString(list);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return Response.status(400).entity(e.getMessage()).build();
 		}
 		return Response.status(200).entity(booksString).build();
 	}
-	
+
 	@GET
-    @Path("/getById/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-	public Response getRecipeById(@PathParam("id") String id)
-	{
+	@Path("/getById/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRecipeById(@PathParam("id") String id) {
 		GetRecipeCommand getRecipeCommand = new GetRecipeCommand();
 		Recipe recipe = getRecipeCommand.execute(id);
 		String recipeString = null;
@@ -67,7 +76,6 @@ public class RecipeService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
 	@Path("/createRecipe")
-	//@Consumes("application/x-www-form-urlencoded")
 	public Response createRecipe(String recipeStr) {
 
 		try {
@@ -81,44 +89,6 @@ public class RecipeService {
 		} catch (Exception e) {
 			return Response.status(400).entity(e.toString()).build();
 		}
-	}
-	
-	@POST
-	@Path("/simplePostRecipe")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response createRecipe(@FormParam("recipeName") String name,@FormParam("direction") String direction) {
-	try {
-		CreateRecipeCommand create = new CreateRecipeCommand();
-		Recipe recipe = new Recipe();
-		recipe.setName(name);
-		recipe.setDirection(direction);
-		boolean success = create.execute(recipe);
-		if (success) {
-		return Response.status(201).entity("recipe successfully created").build();
-		}
-		else
-		return Response.status(400).build();
-		}
-	catch (Exception e) {
-		return Response.status(400).entity(e.toString()).build();
-	}
-}
-	
-	//TODO: Pagination
-	@GET
-	@Path("search")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response searchRecipe(@QueryParam("q") String query) {
-
-		SearchRecipeCommand listRecipes = new SearchRecipeCommand();
-		ArrayList<Recipe> list = listRecipes.execute(query);
-		String booksString = null;
-		try {
-			booksString = mapper.writeValueAsString(list);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return Response.status(200).entity(booksString).build();
 	}
 
 	@DELETE
@@ -136,71 +106,59 @@ public class RecipeService {
 			return Response.status(400).entity(e.toString()).build();
 		}
 	}
-	
-	@DELETE
-    @Path("/deleteById/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-	public Response deleteRecipeById(@PathParam("id") String id) {
+
+	@GET
+	@Path("search")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchRecipe(@QueryParam("q") String query) {
+
+		SearchRecipeCommand listRecipes = new SearchRecipeCommand();
+		ArrayList<Recipe> list = listRecipes.execute(query);
+		String booksString = null;
 		try {
-		DeleteRecipeCommand delete = new DeleteRecipeCommand();
-		boolean success = delete.execute("_id" , id);
-		if (success) {
-			return Response.status(200).entity("Recipe deleted successfully").build();
+			booksString = mapper.writeValueAsString(list);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(400).entity(e.getMessage()).build();
 		}
-		else
-			return Response.status(400).entity("There was a problem while deleting the recipe from the database").build();
-		}
-		catch (Exception e) {
-			return Response.status(400).entity(e.toString()).build();
-		}
+		return Response.status(200).entity(booksString).build();
 	}
-
-
+	
+	//Updates the fields
 	@PUT
-	@Path("/updateAll/{recipeName}")
+	@Path("/partialUpdate/{recipeName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	public Response updateRecipe(String recipeStr, @PathParam("recipeName") String recipeName) {
-
+	public Response updateRecipeField(String recipeStr,
+			@PathParam("recipeName") String recipeName) {
+		// Update fields which are sent, without replacing the whole document
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
 		try {
 			UpdateRecipeCommand update = new UpdateRecipeCommand();
 			Recipe recipe = mapper.readValue(recipeStr, Recipe.class);
-			boolean success = update.execute(recipeName, recipe);
+
+			boolean success = update.execute(recipeName, recipe, true);
 			if (success) {
 				return Response.status(201).build();
 			} else
-				return Response.status(400).build();
+				return Response
+						.status(400)
+						.entity("There was an error while updating the document")
+						.build();
 		} catch (Exception e) {
-			return Response.status(400).entity(e.toString()).build();
+			return Response.status(400).entity(e.getMessage()).build();
 		}
 	}
-	
-	/*@PUT
-	@Path("/put/{recipeName}/{fieldName}/{fieldValue}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-	public Response updateRecipeField(String recipeStr, @PathParam("recipeName") String recipeName, @PathParam("fieldName") String fieldName, @PathParam("fieldValue") String fieldValue) {
-
-		try {
-			UpdateRecipeCommand update = new UpdateRecipeCommand();
-			Recipe recipe = mapper.readValue(recipeStr, Recipe.class);
-			boolean success = update.execute(recipeName, fieldName, fieldValue, recipe);
-			if (success) {
-				return Response.status(201).build();
-			} else
-				return Response.status(400).build();
-		} catch (Exception e) {
-			return Response.status(400).entity(e.toString()).build();
-		}
-	}*/
 
 	/*
-	 * Get first recipe which satisfies the Key:Value combination 
+	 * Get first recipe which satisfies the Key:Value combination
 	 */
 	@GET
 	@Path("/getone/{key}/{value}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRecipeForAtttribute(@PathParam("key") String key, @PathParam("value") String value) {
+	public Response getRecipeForAtttribute(@PathParam("key") String key,
+			@PathParam("value") String value) {
 		GetRecipeCommand getRecipeCommand = new GetRecipeCommand();
 		Recipe recipe = getRecipeCommand.execute(key, value);
 		String recipeString = null;
@@ -208,67 +166,134 @@ public class RecipeService {
 			recipeString = mapper.writeValueAsString(recipe);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(400).build();
+			return Response.status(400)
+					.entity("There was an error getting the recipe").build();
 		}
 		return Response.status(200).entity(recipeString).build();
 	}
 
+	/*
+	 * Web Services created by Keertana HS
+	 */
+	//Simple post when post is called directly from a form
+	@POST
+	@Path("/simplePostRecipe")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response createRecipe(@FormParam("recipeName") String name,
+			@FormParam("direction") String direction) {
+		try {
+			CreateRecipeCommand create = new CreateRecipeCommand();
+			Recipe recipe = new Recipe();
+			recipe.setName(name);
+			recipe.setDirection(direction);
+			boolean success = create.execute(recipe);
+			if (success) {
+				return Response.status(201)
+						.entity("recipe successfully created").build();
+			} else
+				return Response.status(400).build();
+		} catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
+	}
+
+	@DELETE
+	@Path("/deleteById/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteRecipeById(@PathParam("id") String id) {
+		try {
+			DeleteRecipeCommand delete = new DeleteRecipeCommand();
+			boolean success = delete.execute("_id", id);
+			if (success) {
+				return Response.status(200)
+						.entity("Recipe deleted successfully").build();
+			} else
+				return Response
+						.status(400)
+						.entity("There was a problem while deleting the recipe from the database")
+						.build();
+		} catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
+	}
+	
+	//Replaces the document
+	@PUT
+	@Path("/updateAll/{recipeName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+	public Response updateRecipe(String recipeStr,
+			@PathParam("recipeName") String recipeName) {
+
+		try {
+			UpdateRecipeCommand update = new UpdateRecipeCommand();
+			Recipe recipe = mapper.readValue(recipeStr, Recipe.class);
+			boolean success = update.execute(recipeName, recipe, false);
+			if (success) {
+				return Response.status(201).build();
+			} else
+				return Response.status(400).build();
+		} catch (Exception e) {
+			return Response.status(400).entity(e.toString()).build();
+		}
+	}
 
 	@GET
 	@Path("/getappdetails")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAppDetails() {
-	String result = "";
-	try {
-	ObjectNode appInfo = mapper.createObjectNode();
-	PropertiesLookup pl = new PropertiesLookup();
-	appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
-	appInfo.put("team", pl.getProperty("team"));
-	appInfo.put("Version", pl.getProperty("Version"));
-	appInfo.put("course", pl.getProperty("course"));
-	
-	result = mapper.writeValueAsString(appInfo);
+		String result = "";
+		try {
+			ObjectNode appInfo = mapper.createObjectNode();
+			PropertiesLookup pl = new PropertiesLookup();
+			appInfo.put("ApplicationName", pl.getProperty("ProjectName"));
+			appInfo.put("team", pl.getProperty("team"));
+			appInfo.put("Version", pl.getProperty("Version"));
+			appInfo.put("course", pl.getProperty("course"));
+
+			result = mapper.writeValueAsString(appInfo);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return Response.status(400).entity(e.toString()).build();
+		}
+		return Response.status(200).entity(result).build();
 	}
-	catch(Exception e) {
-	System.out.println(e.getMessage());
-	return Response.status(400).entity(e.toString()).build();
-	}
-	return Response.status(200).entity(result).build();
-	}
-	
+
 	@GET
-    @Path("/search/filter/{key}/{value}")
-    @Produces(MediaType.APPLICATION_JSON)
-	public Response searchRecipeWithFilter(@QueryParam("q") String
-	query,@PathParam("key") String key, @PathParam("value") String value)
-	{
-	SearchRecipeCommand listRecipes = new SearchRecipeCommand();
-	ArrayList<Recipe> list = listRecipes.execute(query,key,value);
-	String booksString = null;
-	try {
-	booksString = mapper.writeValueAsString(list);
+	@Path("/search/filter/{key}/{value}/{or}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchRecipeWithFilter(@QueryParam("q") String query,
+			@PathParam("key") String key, @PathParam("value") String value,
+			@PathParam("or") boolean or) {
+		// Boolean b = Boolean.valueOf(or);
+		SearchRecipeCommand listRecipes = new SearchRecipeCommand();
+		ArrayList<Recipe> list = listRecipes.execute(query, key, value, or);
+		String booksString = null;
+		try {
+			booksString = mapper.writeValueAsString(list);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(400).entity(e.toString()).build();
+		}
+		return Response.status(200).entity(booksString).build();
 	}
-	catch (Exception e) {
-	e.printStackTrace();
-	return Response.status(400).entity(e.toString()).build();
-	}
-	return Response.status(200).entity(booksString).build();
-	}
-	
-	//TODO: Link to recipe
+
+	/*
+	 * Pooja
+	 * Need to link to recipe yet
+	 */
+	// TODO: Link to recipe, 
 	@POST
 	@Path("/addImage")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
 	public Response addImage(String recipeStr) {
 		CreateImageCommand image = new CreateImageCommand();
 		boolean result = image.execute();
-		if(result) {
+		if (result) {
 			return Response.status(201).entity("Added successfully").build();
-		}
-		else {
+		} else {
 			return Response.status(400).entity("Could not add image").build();
 		}
 	}
-	
 
 }
