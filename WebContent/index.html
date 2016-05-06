@@ -43,7 +43,7 @@
               <a href="#item1" class="list-group-item">GET RECIPE API</a>
               <a href="#item2" class="list-group-item">GET ALL RECIPES API</a>
               <a href="#item3" class="list-group-item">SEARCH RECIPE API</a>
-              <a href="#item4" class="list-group-item">GET RECIPE API BY PROPERTIES FILE</a>
+              <a href="#item4" class="list-group-item">GET RECIPE DETAILS BY PROPERTIES FILE</a>
               <a href="#item5" class="list-group-item">POST RECIPE API</a>
               <a href="#item6" class="list-group-item">PUT RECIPE API</a>
               <a href="#item7" class="list-group-item">DELETE RECIPE API</a>
@@ -193,7 +193,8 @@
                      <td style="word-wrap: break-word;">GET</td>
                      <td style="word-wrap: break-word;">https://unhrecipe.herokuapp.com/rest/recipes/search/filter</td>
                      <td>{key}/{value}</td>
-                     <td style="word-wrap: break-word;"><a target="_blank" href="https://unhrecipe.herokuapp.com/rest/recipes/search/filter/cuisine/Italian?q=Pancakes">https://unhrecipe.herokuapp.com/rest/recipes/search/filter/cuisine/Italian?q=Pancakes</a></td>
+                     <td style="word-wrap: break-word;"><a target="_blank" href="https://unhrecipe.herokuapp.com/rest/recipes/search/filter/cuisine/Italian/true?q=Pancakes">https://unhrecipe.herokuapp.com/rest/recipes/search/filter/cuisine/Italian/true?q=Pancakes</a></td>
+                     <td style="word-wrap: break-word;"><a target="_blank" href="https://unhrecipe.herokuapp.com/rest/recipes/search/filter/cuisine/Italian/false?q=Pancakes">https://unhrecipe.herokuapp.com/rest/recipes/search/filter/cuisine/Italian/false?q=Pancakes</a></td>
                    </tr>
                 </tbody>
               </table>
@@ -263,7 +264,7 @@
             </div>
             <div id="item5" class="content section">
             <h3>Post Recipe</h3>
-              <p>Post recipe by sending name and direction</p>
+              <p>Post API for sending name and direction</p>
 
               <h4>REQUEST</h4>
               <table class="table table-bordered" style="table-layout:fixed;">
@@ -273,6 +274,7 @@
                      <th>URL</th>
                      <th>PARAMS</th>
                      <th>EXAMPLE</th>
+                     <th>BODY</th>
                    </tr>
                 </thead>
                 <tbody>
@@ -281,6 +283,8 @@
                      <td style="word-wrap: break-word;">https://unhrecipe.herokuapp.com/rest/recipes/simplePostRecipe</td>
                      <td></td>
                      <td style="word-wrap: break-word;"><a target="_blank" href="https://unhrecipe.herokuapp.com/rest/recipes/simplePostRecipe">https://unhrecipe.herokuapp.com/rest/recipes/simplePostRecipe</a></td>
+                     <td style="word-wrap: break-word;">{"name":"Okara fry","difficultyLevel":"Medium","recipeCategory":"Side Dish","cuisine":"Indian","prepTime":"00:45","cookTime":"00:15","recipePhotoLink":"http://media1.sailusfood.com/wp-content/uploads/2008/11/aloo-gobhi1.jpg","ingredients":null,"direction":null,"additionalNote":null,"yields":"4 servings","nutritionFacts":{"saturatedFat":"50","totalFat":"100","ServingSize":"2","calories":"100"}}</td>
+                     <td>This API uses form data type</td>
                    </tr>
                 </tbody>
               </table>
@@ -305,7 +309,7 @@
               </table>
             </div>
              
-              <p>Post recipe by creating recipes</p>
+              <p>Post API for creating recipes</p>
 
               <h4>REQUEST</h4>
               <table class="table table-bordered" style="table-layout:fixed;">
@@ -315,6 +319,7 @@
                      <th>URL</th>
                      <th>PARAMS</th>
                      <th>EXAMPLE</th>
+                     <th>BODY</th>
                    </tr>
                 </thead>
                 <tbody>
@@ -323,6 +328,7 @@
                      <td style="word-wrap: break-word;">https://unhrecipe.herokuapp.com/rest/recipes/createRecipe</td>
                      <td></td>
                      <td style="word-wrap: break-word;"><a target="_blank" href="https://unhrecipe.herokuapp.com/rest/recipes/createRecipe">https://unhrecipe.herokuapp.com/rest/recipes/createRecipe</a></td>
+                     <td style="word-wrap: break-word;">{"name":"Brinjal curry","difficultyLevel":"Medium","recipeCategory":"Side Dish","cuisine":"Indian","prepTime":"00:45","cookTime":"00:15","recipePhotoLink":"http://media1.sailusfood.com/wp-content/uploads/2008/11/aloo-gobhi1.jpg","ingredients":null,"direction":null,"additionalNote":null,"yields":"4 servings","nutritionFacts":{"saturatedFat":"50","totalFat":"100","ServingSize":"2","calories":"100"}}</td>
                    </tr>
                 </tbody>
               </table>
@@ -348,7 +354,7 @@
            
             <div id="item6" class="content section">
             <h3>PUT Recipe</h3>
-              <p>Put recipe for updating recipes</p>
+              <p>Put API for updating the entire recipe</p>
 
               <h4>REQUEST</h4>
               <table class="table table-bordered" style="table-layout:fixed;">
@@ -358,14 +364,16 @@
                      <th>URL</th>
                      <th>PARAMS</th>
                      <th>EXAMPLE</th>
+                     <th>BODY</th>
                    </tr>
                 </thead>
                 <tbody>
                    <tr>
                      <td style="word-wrap: break-word;">PUT</td>
                      <td style="word-wrap: break-word;">https://unhrecipe.herokuapp.com/rest/recipes/updateAll</td>
-                     <td></td>
+                     <td>{name}</td>
                      <td style="word-wrap: break-word;"><a target="_blank" href="https://unhrecipe.herokuapp.com/rest/recipes/updateAll/Kheer">https://unhrecipe.herokuapp.com/rest/recipes/updateAll/Kheer</a></td>
+                     <td style="word-wrap: break-word;">{"name":"Kheer"","difficultyLevel":"Medium","recipeCategory":"Side Dish","cuisine":"Indian","prepTime":"00:45","cookTime":"00:15","recipePhotoLink":"http://media1.sailusfood.com/wp-content/uploads/2008/11/aloo-gobhi1.jpg","ingredients":null,"direction":null,"additionalNote":null,"yields":"4 servings","nutritionFacts":{"saturatedFat":"50","totalFat":"100","ServingSize":"2","calories":"100"}}</td>
                    </tr>
                 </tbody>
               </table>
@@ -389,9 +397,51 @@
                 </tbody>
               </table>
             </div>
+              <p>Put API for partially updating the recipes</p>
+
+              <h4>REQUEST</h4>
+              <table class="table table-bordered" style="table-layout:fixed;">
+                <thead>
+                   <tr>
+                     <th>METHOD</th>
+                     <th>URL</th>
+                     <th>PARAMS</th>
+                     <th>EXAMPLE</th>
+                     <th>BODY</th>
+                   </tr>
+                </thead>
+                <tbody>
+                   <tr>
+                     <td style="word-wrap: break-word;">PUT</td>
+                     <td style="word-wrap: break-word;">https://unhrecipe.herokuapp.com/rest/recipes/partialUpdate</td>
+                     <td>{name}</td>
+                     <td style="word-wrap: break-word;"><a target="_blank" href="https://unhrecipe.herokuapp.com/rest/recipes/partialUpdate/Kheer">https://unhrecipe.herokuapp.com/rest/recipes/partialUpdate/Kheer</a></td>
+                     <td style="word-wrap: break-word;">{"name":"Kheer"","difficultyLevel":"Medium","recipeCategory":"Side Dish","cuisine":"Indian"}</td>
+                   </tr>
+                </tbody>
+              </table>
+              <h4>RESPONSE</h4>
+              <table class="table table-bordered">
+                <thead>
+                   <tr>
+                     <th>STATUS</th>
+                     <th>RESPONSE</th>
+                   </tr>
+                </thead>
+                <tbody>
+                   <tr>
+                     <td>200</td>
+                     <td>Success</td>
+                   </tr>
+                   <tr>
+                     <td>400</td>
+                     <td>{"There was an error in partial updating the recipe in any fields "}</td>
+                   </tr>
+                </tbody>
+              </table>
             <div id="item7" class="content section">
             <h3>DELETE Recipe</h3>
-              <p>Delete recipe by Id </p>
+              <p>Delete API to delete by Id </p>
 
               <h4>REQUEST</h4>
               <table class="table table-bordered" style="table-layout:fixed;">
@@ -432,7 +482,7 @@
                 </tbody>
               </table>
             </div>
-            <p>Delete recipe by name </p>
+            <p>Delete API to delete by name </p>
 
               <h4>REQUEST</h4>
               <table class="table table-bordered" style="table-layout:fixed;">
