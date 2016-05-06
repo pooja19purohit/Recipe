@@ -67,7 +67,7 @@ public class RecipeService {
 			recipeString = mapper.writeValueAsString(recipe);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(400).build();
+			return Response.status(400).entity(e.getMessage()).build();
 		}
 		return Response.status(200).entity(recipeString).build();
 	}
@@ -85,9 +85,9 @@ public class RecipeService {
 			if (success) {
 				return Response.status(201).build();
 			} else
-				return Response.status(400).build();
+				return Response.status(400).entity("There was an error while creating recipe. Please check you connection or data").build();
 		} catch (Exception e) {
-			return Response.status(400).entity(e.toString()).build();
+			return Response.status(400).entity(e.getMessage()).build();
 		}
 	}
 
@@ -101,9 +101,9 @@ public class RecipeService {
 			if (success) {
 				return Response.status(200).build();
 			} else
-				return Response.status(400).build();
+				return Response.status(400).entity("There was an error while deleting recipe").build();
 		} catch (Exception e) {
-			return Response.status(400).entity(e.toString()).build();
+			return Response.status(400).entity(e.getMessage()).build();
 		}
 	}
 
@@ -142,10 +142,7 @@ public class RecipeService {
 			if (success) {
 				return Response.status(201).build();
 			} else
-				return Response
-						.status(400)
-						.entity("There was an error while updating the document")
-						.build();
+				return Response.status(400).entity("There was an error while updating the document").build();
 		} catch (Exception e) {
 			return Response.status(400).entity(e.getMessage()).build();
 		}
@@ -166,14 +163,13 @@ public class RecipeService {
 			recipeString = mapper.writeValueAsString(recipe);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(400)
-					.entity("There was an error getting the recipe").build();
+			return Response.status(400).entity(e.getMessage()).build();
 		}
 		return Response.status(200).entity(recipeString).build();
 	}
 
 	/*
-	 * Web Services created by Keertana HS
+	 * Web Services created by Keertana HS: POST, GET, PUT , DELETE
 	 */
 	//Simple post when post is called directly from a form
 	@POST
@@ -188,10 +184,9 @@ public class RecipeService {
 			recipe.setDirection(direction);
 			boolean success = create.execute(recipe);
 			if (success) {
-				return Response.status(201)
-						.entity("recipe successfully created").build();
+				return Response.status(201).entity("recipe successfully created").build();
 			} else
-				return Response.status(400).build();
+				return Response.status(400).entity("Error while posting recipe").build();
 		} catch (Exception e) {
 			return Response.status(400).entity(e.toString()).build();
 		}
@@ -205,13 +200,9 @@ public class RecipeService {
 			DeleteRecipeCommand delete = new DeleteRecipeCommand();
 			boolean success = delete.execute("_id", id);
 			if (success) {
-				return Response.status(200)
-						.entity("Recipe deleted successfully").build();
+				return Response.status(200).entity("Recipe deleted successfully").build();
 			} else
-				return Response
-						.status(400)
-						.entity("There was a problem while deleting the recipe from the database")
-						.build();
+				return Response.status(400).entity("There was a problem while deleting the recipe from the database").build();
 		} catch (Exception e) {
 			return Response.status(400).entity(e.toString()).build();
 		}
@@ -232,7 +223,7 @@ public class RecipeService {
 			if (success) {
 				return Response.status(201).build();
 			} else
-				return Response.status(400).build();
+				return Response.status(400).entity("There was an error while replacing document in the database").build();
 		} catch (Exception e) {
 			return Response.status(400).entity(e.toString()).build();
 		}
@@ -282,7 +273,7 @@ public class RecipeService {
 	 * Pooja
 	 * Need to link to recipe yet
 	 */
-	// TODO: Link to recipe, 
+	// TODO: Link each image to recipe
 	@POST
 	@Path("/addImage")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
