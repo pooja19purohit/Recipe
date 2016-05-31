@@ -12,7 +12,7 @@ public class ConnectionProvider {
 	public MongoClient getConnection() {
 		try {
 
-			MongoCredential credential = MongoCredential.createCredential("pooja19purohit", "recipe", "pooja123".toCharArray());
+			MongoCredential credential = MongoCredential.createCredential("pooja19purohit", "recipe", "xxx".toCharArray());
 			MongoClient client = new MongoClient(new ServerAddress("ds019990.mlab.com", Integer.valueOf("19990")),
 					Arrays.asList(credential));
 			
